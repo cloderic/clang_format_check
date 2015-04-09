@@ -2,6 +2,8 @@
 
 :construction: _Still a work in progress, contributions are welcome_ :construction:
 
+[![Build Status](https://travis-ci.org/cloderic/clang_format_check.svg?branch=master)](https://travis-ci.org/cloderic/clang_format_check)
+
 Coding style checker relying on [clang-format](http://clang.llvm.org/docs/ClangFormat.html).
 
     usage: clang_format_check.py [-h] [-s STYLE] file [file ...]
