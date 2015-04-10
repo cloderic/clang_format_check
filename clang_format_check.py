@@ -74,6 +74,16 @@ def clang_format_check(
         print "A total of {} format errors were found".format(errorCount)
     return errorCount, file_errors
 
+def check_clang_format_exec():
+    try:
+        subprocess.check_output(["clang-format", "-version"])
+        return True
+    except subprocess.CalledProcessError, e:
+        # it seems that in some version of clang-format '-version' leads to non-zero exist status
+        return True
+    except OSError, e:
+        return False
+
 def main():
     parser = argparse.ArgumentParser(description="C/C++ formatting check using clang-format")
 
@@ -87,9 +97,14 @@ def main():
     args = parser.parse_args()
 
     try:
-        # Adding the double quotes around the
+        # Adding the double quotes around the inline style
         if len(args.style) > 0 and args.style[0] == "{":
             args.style = "\"" + args.style + "\""
+
+        # Checking that clang-format is available
+        if not check_clang_format_exec():
+            print "Can't run 'clang-format', please make sure it is installed and reachable in your PATH."
+            exit(-1)
 
         # globing the file paths
         files = set()
@@ -106,7 +121,7 @@ def main():
         print '-'*60
         traceback.print_exc()
         print '-'*60
-        exit(1)
+        exit(-2)
 
 if __name__ == "__main__" :
     main()
