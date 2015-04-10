@@ -30,6 +30,3 @@ class TestClangFormatCheck(unittest.TestCase):
                     returncode, output = execute([clang_format_check, os.path.join(root, file)])
                     self.assertNotEqual(returncode, 0)
                     self.assertEqual(output, open(os.path.join(root, file + ".out")).read())
-
-if __name__ == '__main__':
-    unittest.main()

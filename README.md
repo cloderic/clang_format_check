@@ -20,9 +20,13 @@ Coding style checker relying on [clang-format](http://clang.llvm.org/docs/ClangF
                             Coding style, pass-through to clang-format's
                             -style=<string>, (default is 'file')
 
+## Install dependencies ##
+
+Run the usual `pip install -r requirements.txt`
+
 ## Running tests ##
 
-Simply run `./test/run_tests.py` to launch the script on all `.cpp` files under `test/data`.
+Simply run [`nosetests`](https://nose.readthedocs.org) to launch the script on all `.cpp` files under `test/data`.
 
 - All tests are run with the _file_ style, they'll rely on their `.clang-format` file.
 - All files ending with `...ok.cpp` should be valid.
