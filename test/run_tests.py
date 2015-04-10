@@ -30,3 +30,7 @@ class TestClangFormatCheck(unittest.TestCase):
                     returncode, output = execute([clang_format_check, os.path.join(root, file)])
                     self.assertNotEqual(returncode, 0)
                     self.assertEqual(output, open(os.path.join(root, file + ".out")).read())
+
+    def test_fails_when_no_files(self):
+        returncode, output = execute([clang_format_check])
+        self.assertNotEqual(returncode, 0)
