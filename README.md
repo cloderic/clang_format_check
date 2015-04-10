@@ -6,7 +6,9 @@
 
 Coding style checker relying on [clang-format](http://clang.llvm.org/docs/ClangFormat.html).
 
-    usage: clang_format_check.py [-h] [-s STYLE] file [file ...]
+    usage: clang_format_check.py [-h] [-s STYLE]
+                                 [--success-on-missing-clang-format]
+                                 file [file ...]
 
     C/C++ formatting check using clang-format
 
@@ -18,7 +20,10 @@ Coding style checker relying on [clang-format](http://clang.llvm.org/docs/ClangF
       -h, --help            show this help message and exit
       -s STYLE, --style STYLE
                             Coding style, pass-through to clang-format's
-                            -style=<string>, (default is 'file')
+                            -style=<string>, (default is 'file').
+      --success-on-missing-clang-format
+                            If set this flag will lead to a success (zero exit
+                            status) if clang-format is not available.
 
 ## Install dependencies ##
 

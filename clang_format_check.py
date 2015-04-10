@@ -90,7 +90,12 @@ def main():
     # Style
     parser.add_argument("-s", "--style",
         default="file",
-        help="Coding style, pass-through to clang-format's -style=<string>, (default is '%(default)s')")
+        help="Coding style, pass-through to clang-format's -style=<string>, (default is '%(default)s').")
+
+    # Exit cleanly on missing clang-format
+    parser.add_argument("--success-on-missing-clang-format",
+        action="store_true",
+        help="If set this flag will lead to a success (zero exit status) if clang-format is not available.")
 
     # Files or directory to check
     parser.add_argument("file", nargs="+", help="Paths to the files that'll be checked (wilcards accepted).")
@@ -104,7 +109,10 @@ def main():
         # Checking that clang-format is available
         if not check_clang_format_exec():
             print "Can't run 'clang-format', please make sure it is installed and reachable in your PATH."
-            exit(-1)
+            if args.success_on_missing_clang_format:
+                exit(0)
+            else:
+                exit(-1)
 
         # globing the file paths
         files = set()
