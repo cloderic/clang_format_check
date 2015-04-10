@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/cloderic/clang_format_check.svg?branch=master)](https://travis-ci.org/cloderic/clang_format_check)
 
-Coding style checker relying on [clang-format](http://clang.llvm.org/docs/ClangFormat.html).
+In the spirit of linter and coding style checker such as [jshint](http://jshint.com) or [jscs](http://jscs.info), this helper script relies on [clang-format](http://clang.llvm.org/docs/ClangFormat.html) to check and report coding style issues in C and C++ codebases.
 
     usage: clang_format_check.py [-h] [-s STYLE]
                                  [--success-on-missing-clang-format]
