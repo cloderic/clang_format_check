@@ -14,17 +14,16 @@ Error = namedtuple("Error", "line column length expected")
 __author__ = "github.com/cloderic"
 __version__ = "0.1"
 
-def linecolumn_from_offset(file, offset):
-    line_count = 0
-    previous_byte_count = 0
-    byte_count = 0
+def linecolumn_from_offset(file, target_offset):
+    line_number = 1
+    line_begin_offset = 0
     for line in open(file, "r"):
-        line_count += 1
-        byte_count += len(line)
-        if byte_count > offset:
-            return line_count, offset - previous_byte_count
-        previous_byte_count = byte_count
-    raise Exception("Can't reach byte #{} in '{}'".format(offset, file))
+        line_end_offset = line_begin_offset + len(line)
+        if line_end_offset > target_offset:
+            return line_number, target_offset - line_begin_offset + 1
+        line_number += 1
+        line_begin_offset = line_end_offset
+    raise Exception("Can't reach byte #{} in '{}'".format(target_offset, file))
 
 def clang_format_check(
     files=[],

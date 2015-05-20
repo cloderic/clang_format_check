@@ -1,7 +1,10 @@
 Checking 1 files...
--- 3 format errors at data/file_style/hello_world_ko.cpp:
-    (4,10)
-    (5,1)
+-- 6 format errors at data/file_style/hello_world_ko.cpp:
+    (4,4)
+    (4,12)
+    (4,15)
+    (5,2)
     (6,30)
+    (6,36)
 ---
-A total of 3 format errors were found
+A total of 6 format errors were found
