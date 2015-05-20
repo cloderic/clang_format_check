@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 
 from collections import namedtuple
 Replacement = namedtuple("Replacement", "offset length text")
-Error = namedtuple("Error", "line column length expected")
+Error = namedtuple("Error", "line column found expected")
 
 __author__ = "github.com/cloderic"
 __version__ = "0.1"
@@ -48,8 +48,8 @@ def errors_from_replacements(file, replacements = []):
             errors.append(Error(
                 line = line_index,
                 column = replacement.offset - line_offset,
-                length = replacement.length,
-                expected = replacement.text
+                found = file_content[replacement.offset:replacement.offset + replacement.length],
+                expected = replacement.text if replacement.text else ""
             ))
 
         if len(replacements) == 0:
@@ -79,6 +79,8 @@ def clang_format_check(
             print "-- {} format errors at {}:".format(len(errors), file)
             for error in errors:
                 print "    ({},{})".format(error.line + 1, error.column + 1)
+                # print "        - found: \"{}\"".format(error.found)
+                # print "        - expected: \"{}\"".format(error.expected)
         print "---"
         print "A total of {} format errors were found".format(errorCount)
     return errorCount, file_errors
