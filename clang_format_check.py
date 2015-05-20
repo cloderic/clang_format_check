@@ -14,12 +14,6 @@ Error = namedtuple("Error", "line column length expected")
 __author__ = "github.com/cloderic"
 __version__ = "0.1"
 
-def countbytes(iterable):
-    bytes = 0
-    for item in iterable:
-        bytes += len(item)
-        yield bytes
-
 def linecolumn_from_offset(file, offset):
     line_count = 0
     previous_byte_count = 0
