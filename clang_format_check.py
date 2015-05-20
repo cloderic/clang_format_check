@@ -33,16 +33,29 @@ def replacements_from_file(file, style="file"):
 
     return replacements
 
-def linecolumn_from_offset(file, target_offset):
-    line_number = 1
-    line_begin_offset = 0
+def errors_from_replacements(file, replacements = []):
+    errors = []
+
+    lines = [0] # line index to character offset
+    file_content = ""
     for line in open(file, "r"):
-        line_end_offset = line_begin_offset + len(line)
-        if line_end_offset > target_offset:
-            return line_number, target_offset - line_begin_offset + 1
-        line_number += 1
-        line_begin_offset = line_end_offset
-    raise Exception("Can't reach byte #{} in '{}'".format(target_offset, file))
+        file_content += line
+        lines.append(lines[-1] + len(line))
+
+    for line_index, line_offset in enumerate(lines[:-1]):
+        while len(replacements) > 0 and lines[line_index + 1] > replacements[0].offset:
+            replacement = replacements.pop(0)
+            errors.append(Error(
+                line = line_index,
+                column = replacement.offset - line_offset,
+                length = replacement.length,
+                expected = replacement.text
+            ))
+
+        if len(replacements) == 0:
+            break
+
+    return errors
 
 def clang_format_check(
     files=[],
@@ -55,19 +68,9 @@ def clang_format_check(
 
     for file in files:
         replacements = replacements_from_file(file, style)
-        for replacement in replacements:
-            line, column = linecolumn_from_offset(file, replacement.offset)
-            error = Error(
-                line = line,
-                column = column,
-                length = replacement.length,
-                expected = replacement.text
-            )
-            errorCount += 1
-            if file in file_errors:
-                file_errors[file].append(error)
-            else:
-                file_errors[file] = [error]
+        errors = errors_from_replacements(file, replacements)
+        errorCount += len(errors)
+        file_errors[file] = errors
 
     if errorCount == 0:
         print "No format error found"
@@ -75,7 +78,7 @@ def clang_format_check(
         for file, errors in file_errors.iteritems():
             print "-- {} format errors at {}:".format(len(errors), file)
             for error in errors:
-                print "    ({},{})".format(error.line, error.column)
+                print "    ({},{})".format(error.line + 1, error.column + 1)
         print "---"
         print "A total of {} format errors were found".format(errorCount)
     return errorCount, file_errors
