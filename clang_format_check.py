@@ -9,10 +9,29 @@ import traceback
 import xml.etree.ElementTree as ET
 
 from collections import namedtuple
+Replacement = namedtuple("Replacement", "offset length text")
 Error = namedtuple("Error", "line column length expected")
 
 __author__ = "github.com/cloderic"
 __version__ = "0.1"
+
+def replacements_from_file(file, style="file"):
+    replacements = []
+
+    clang_format_args = ["clang-format"]
+    clang_format_args.append("-style={}".format(style))
+    clang_format_args.append("-output-replacements-xml")
+    clang_format_args.append(os.path.basename(file))
+    replacement_xml = subprocess.check_output(clang_format_args, cwd = os.path.dirname(file))
+    replacement_xml_root = ET.XML(replacement_xml)
+    for replacement_item in replacement_xml_root.findall('replacement'):
+        replacements.append(Replacement(
+            offset = int(replacement_item.attrib["offset"]),
+            length = int(replacement_item.attrib["length"]),
+            text = replacement_item.text
+        ))
+
+    return replacements
 
 def linecolumn_from_offset(file, target_offset):
     line_number = 1
@@ -35,19 +54,13 @@ def clang_format_check(
     file_errors = dict()
 
     for file in files:
-        clang_format_args = ["clang-format"]
-        clang_format_args.append("-style={}".format(style))
-        clang_format_args.append("-output-replacements-xml")
-        clang_format_args.append(os.path.basename(file))
-        replacement_xml = subprocess.check_output(clang_format_args, cwd = os.path.dirname(file))
-        replacement_xml_root = ET.XML(replacement_xml)
-        for replacement in replacement_xml_root.findall('replacement'):
-            offset = int(replacement.attrib["offset"])
-            line, column = linecolumn_from_offset(file, offset)
+        replacements = replacements_from_file(file, style)
+        for replacement in replacements:
+            line, column = linecolumn_from_offset(file, replacement.offset)
             error = Error(
                 line = line,
                 column = column,
-                length = int(replacement.attrib["length"]),
+                length = replacement.length,
                 expected = replacement.text
             )
             errorCount += 1
