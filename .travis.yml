@@ -5,5 +5,8 @@ python:
 install:
   - "sudo apt-get install clang-format-3.4"
   - "pip install -r requirements.txt"
+  - pip install pep8
 # command to run tests
-script: nosetests
+script:
+  - pep8 .
+  - nosetests
