@@ -60,9 +60,6 @@ def errors_from_replacements(file, replacements = []):
 def clang_format_check(
     files=[],
     style="file"):
-
-    print "Checking {} files...".format(len(files))
-
     errorCount = 0
     file_errors = dict()
 
@@ -71,7 +68,9 @@ def clang_format_check(
         errors = errors_from_replacements(file, replacements)
         errorCount += len(errors)
         file_errors[file] = errors
+    return errorCount, file_errors
 
+def print_error_report(errorCount, file_errors):
     if errorCount == 0:
         print "No format error found"
     else:
@@ -83,7 +82,7 @@ def clang_format_check(
                 # print "        - expected: \"{}\"".format(error.expected)
         print "---"
         print "A total of {} format errors were found".format(errorCount)
-    return errorCount, file_errors
+
 
 def check_clang_format_exec():
     try:
@@ -131,7 +130,11 @@ def main():
             for file in glob.iglob(pattern):
                 files.add(os.path.relpath(file))
 
-        errorCount, file_errors = clang_format_check(style=args.style, files=list(files))
+        file_list = list(files)
+        print "Checking {} files...".format(len(file_list))
+        errorCount, file_errors = clang_format_check(style=args.style,
+                                                     files=file_list)
+        print_error_report(errorCount, file_errors)
         exit(errorCount)
 
     except Exception, e:
