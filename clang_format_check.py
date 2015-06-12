@@ -13,7 +13,7 @@ Replacement = namedtuple("Replacement", "offset length text")
 Error = namedtuple("Error", "line column found expected")
 
 __author__ = "github.com/cloderic"
-__version__ = "0.2"
+__version__ = "0.3"
 
 
 def replacements_from_file(file, style="file"):
