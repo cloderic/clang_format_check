@@ -60,18 +60,18 @@ def errors_from_replacements(file, replacements = []):
 def clang_format_check(
     files=[],
     style="file"):
-    errorCount = 0
+    error_count = 0
     file_errors = dict()
 
     for file in files:
         replacements = replacements_from_file(file, style)
         errors = errors_from_replacements(file, replacements)
-        errorCount += len(errors)
+        error_count += len(errors)
         file_errors[file] = errors
-    return errorCount, file_errors
+    return error_count, file_errors
 
-def print_error_report(errorCount, file_errors):
-    if errorCount == 0:
+def print_error_report(error_count, file_errors):
+    if error_count == 0:
         print "No format error found"
     else:
         for file, errors in file_errors.iteritems():
@@ -81,7 +81,7 @@ def print_error_report(errorCount, file_errors):
                 # print "        - found: \"{}\"".format(error.found)
                 # print "        - expected: \"{}\"".format(error.expected)
         print "---"
-        print "A total of {} format errors were found".format(errorCount)
+        print "A total of {} format errors were found".format(error_count)
 
 
 def check_clang_format_exec():
@@ -132,10 +132,10 @@ def main():
 
         file_list = list(files)
         print "Checking {} files...".format(len(file_list))
-        errorCount, file_errors = clang_format_check(style=args.style,
+        error_count, file_errors = clang_format_check(style=args.style,
                                                      files=file_list)
-        print_error_report(errorCount, file_errors)
-        exit(errorCount)
+        print_error_report(error_count, file_errors)
+        exit(error_count)
 
     except Exception, e:
         print "Exception raised:"
